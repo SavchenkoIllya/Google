@@ -2,11 +2,14 @@ import React from 'react';
 import { Icon } from '@iconify/react';
 import clockCircleOutlined from '@iconify-icons/ant-design/clock-circle-outlined';
 import crossIcon from '@iconify-icons/akar-icons/cross';
+import {connect} from "react-redux"
+import {DELETE_HIST} from './redux/types';
+import { store } from './index.js';
 
-function Modal(props) {
-        console.log('added_redux');
+const Modal = function Modal(props){
+
         return (
-                <div id='modalHistory' className='modal' style={{ marginTop: '2px' }}>
+                <div id='modalHistory' className='modal'>
                         <div className='modal-content-wrapper'>
                             {
                                 props.history.map(
@@ -17,7 +20,8 @@ function Modal(props) {
                                         <Icon 
                                         onClick={
                                             () => {
-                                                props.delete(index)}
+                                                props.delete(index)
+                                                store.dispatch ({type: DELETE_HIST})}
                                         }
                                         icon={crossIcon} className='cross-icon'/>
                                     </div>
@@ -28,8 +32,8 @@ function Modal(props) {
                             <button onClick={props.customClick} className='button1' type='submit'>Поиск в Google</button>
                             <button onClick={props.customClick} className='button1' type='submit'>Мне повезёт!</button>
                         </div>
-                    </div>
+                    </div>           
         )
     }
 
-export default Modal;
+export default connect(null, null)(Modal);

@@ -5,6 +5,8 @@ import searchIcon from '@iconify-icons/bi/search';
 import keyboardIcon from '@iconify-icons/vaadin/keyboard';
 import microphoneSolid from '@iconify-icons/clarity/microphone-solid';
 import Modal from './Modal.js';
+import {store} from './index.js';
+import {CREATE_HIST} from './redux/types';
 
 class Main extends React.Component {
 
@@ -15,7 +17,7 @@ class Main extends React.Component {
     }
 
     state = {
-        browserHistory : []
+        browserHistory : [],
     }
 
     inputText () {
@@ -31,18 +33,21 @@ class Main extends React.Component {
     Enter (e){
         if(e.key === "Enter") {
             this.inputText();
+            store.dispatch ({type : CREATE_HIST, payload: this.state.browserHistory})
         }
     }
 
     handleClick (e) {
         e.preventDefault ();
         this.inputText();
-    }
+        store.dispatch ({type : CREATE_HIST, payload: this.state.browserHistory})
+    } 
 
     deleteHist = (index) => {
         let arr_2 = this.state.browserHistory
         arr_2.splice(index, 1);
-        this.setState({browserHistory : arr_2})
+        // this.setState({browserHistory : arr_2})
+        this.setState(this.state.browserHistory)
     }
 
     componentDidMount (){
@@ -50,6 +55,7 @@ class Main extends React.Component {
         let modalHistory = document.getElementById('modalHistory');
         let Background = document.getElementById('rood');
         let amount = this.state.browserHistory;
+        let inpt = document.getElementById('input')
 
         inputForm.addEventListener('click', function(){
             if(amount > ''){
@@ -58,18 +64,12 @@ class Main extends React.Component {
                 }
             });
 
+
         Background.addEventListener('click', function (e){
-            if(e.target.classList.contains('input-overlay')){
+            if(e.target !== modalHistory && e.target !== inputForm && e.target !== inpt){
                     modalHistory.classList.remove('modal-view')
                     inputForm.classList.remove('clicked')}
         })
-
-        // Background.addEventListener('click', function(e){
-        //     if(!e.target.closest('input-overlay') && e.target.closest('cross-icon')){
-        //     modalHistory.classList.remove('modal-view')
-        //     inputForm.classList.remove('clicked')
-        //     }
-        // });
     }
 
     render(){
@@ -86,7 +86,7 @@ class Main extends React.Component {
                             <Icon icon={keyboardIcon} />
                             <Icon icon={microphoneSolid} className='micro' />
                         </div>
-                        <Modal delete={this.deleteHist} customClick={this.handleClick} history={this.state.browserHistory}/>
+                        <Modal id='modalpopup' delete={this.deleteHist} customClick={this.handleClick} history={this.state.browserHistory}/>
                     </div>
                     <div className='buttons'>
                         <button onClick={this.handleClick} className='button1'>Поиск в Google</button>
