@@ -4,9 +4,9 @@ import clockCircleOutlined from '@iconify-icons/ant-design/clock-circle-outlined
 import crossIcon from '@iconify-icons/akar-icons/cross';
 
 function Modal(props) {
-
+        console.log('added_redux');
         return (
-                <div id='modalHistory' className='modal'>
+                <div id='modalHistory' className='modal' style={{ marginTop: '2px' }}>
                         <div className='modal-content-wrapper'>
                             {
                                 props.history.map(
