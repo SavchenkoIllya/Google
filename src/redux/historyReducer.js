@@ -1,8 +1,7 @@
 import { CREATE_HIST, DELETE_HIST } from './types';
 
 const initialState = {
-    histories : [],
-    staticData : "info for user"
+    histories : []
 }
 
 export const historyReducer = (state = initialState, actions, payload) => {
