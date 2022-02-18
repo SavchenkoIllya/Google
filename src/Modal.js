@@ -1,39 +1,34 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import {store} from './index.js';
+import {DELETE_HIST} from './redux/types';
+
+//Icons
 import { Icon } from '@iconify/react';
 import clockCircleOutlined from '@iconify-icons/ant-design/clock-circle-outlined';
 import crossIcon from '@iconify-icons/akar-icons/cross';
-import {connect} from "react-redux"
-import {DELETE_HIST} from './redux/types';
-import { store } from './index.js';
 
-const Modal = function Modal(props){
+function Modal(props){
+    const history = useSelector(state => state.browserHistory)
 
         return (
                 <div id='modalHistory' className='modal'>
                         <div className='modal-content-wrapper'>
-                            {
-                                props.history.map(
-                                    (x, index)  => 
-                                    <div className='modal-element' key={x+'deletekey'}>
+                            {history.map((x, index)  => 
+                                    <div className='modal-element' key={x+Date.now()}>
                                         <Icon icon={clockCircleOutlined} className='clock-icon'/>
                                         <div className='modal-content'>{x}</div>
                                         <Icon 
-                                        onClick={
-                                            () => {
-                                                props.delete(index)
-                                                store.dispatch ({type: DELETE_HIST})}
-                                        }
+                                        onClick= {() => store.dispatch ({type: DELETE_HIST, payload: index})}
                                         icon={crossIcon} className='cross-icon'/>
-                                    </div>
-                                    )
-                            }
+                                    </div>).reverse()}
                         </div>
                         <div className='buttons-modal'>
-                            <button onClick={props.customClick} className='button1' type='submit'>Поиск в Google</button>
+                            <button onClick={props.customClick}  className='button1' type='submit'>Поиск в Google</button>
                             <button onClick={props.customClick} className='button1' type='submit'>Мне повезёт!</button>
                         </div>
                     </div>           
         )
     }
 
-export default connect(null, null)(Modal);
+export default Modal;

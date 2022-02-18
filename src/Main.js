@@ -1,12 +1,16 @@
 import React from 'react';
+import {CREATE_HIST} from './redux/types';
+import {store} from './index.js';
+
+//Assets
 import GoogleLogo from './imgs/google_logo.png';
 import { Icon } from '@iconify/react';
 import searchIcon from '@iconify-icons/bi/search';
 import keyboardIcon from '@iconify-icons/vaadin/keyboard';
 import microphoneSolid from '@iconify-icons/clarity/microphone-solid';
-import Modal from './Modal.js';
-import {store} from './index.js';
-import {CREATE_HIST} from './redux/types';
+
+// modules
+import Modal from './Modal.js'
 
 class Main extends React.Component {
 
@@ -16,59 +20,36 @@ class Main extends React.Component {
         this.Enter = this.Enter.bind(this);
     }
 
-    state = {
-        browserHistory : [],
-    }
-
     inputText () {
-        let arr = this.state.browserHistory
         const txtToPut = document.getElementById('input').value
-        if(!(arr && arr[0] && arr[0] === txtToPut) &&  txtToPut !== '') {
-            arr.unshift(txtToPut)
-            arr = arr.slice(0,10)
-        }
-        this.setState({ browserHistory : arr})
+        store.dispatch({type : CREATE_HIST, payload: txtToPut})
     }
 
     Enter (e){
         if(e.key === "Enter") {
             this.inputText();
-            store.dispatch ({type : CREATE_HIST, payload: this.state.browserHistory})
         }
     }
 
     handleClick (e) {
         e.preventDefault ();
         this.inputText();
-        store.dispatch ({type : CREATE_HIST, payload: this.state.browserHistory})
     } 
-
-    deleteHist = (index) => {
-        let arr_2 = this.state.browserHistory
-        arr_2.splice(index, 1);
-        // this.setState({browserHistory : arr_2})
-        this.setState(this.state.browserHistory)
-    }
 
     componentDidMount (){
         let inputForm = document.getElementById('inputForm');
         let modalHistory = document.getElementById('modalHistory');
         let Background = document.getElementById('rood');
-        let amount = this.state.browserHistory;
         let inpt = document.getElementById('input')
-
-        inputForm.addEventListener('click', function(){
-            if(amount > ''){
-                modalHistory.classList.add('modal-view')
-                inputForm.classList.add('clicked')
-                }
-            });
-
 
         Background.addEventListener('click', function (e){
             if(e.target !== modalHistory && e.target !== inputForm && e.target !== inpt){
                     modalHistory.classList.remove('modal-view')
                     inputForm.classList.remove('clicked')}
+        })
+
+        inpt.addEventListener('click', ()=>{
+            modalHistory.classList.add('modal-view')
         })
     }
 
@@ -86,7 +67,7 @@ class Main extends React.Component {
                             <Icon icon={keyboardIcon} />
                             <Icon icon={microphoneSolid} className='micro' />
                         </div>
-                        <Modal id='modalpopup' delete={this.deleteHist} customClick={this.handleClick} history={this.state.browserHistory}/>
+                        <Modal id='modalpopup' delete={this.deleteHist} customClick={this.handleClick}/>
                     </div>
                     <div className='buttons'>
                         <button onClick={this.handleClick} className='button1'>Поиск в Google</button>
